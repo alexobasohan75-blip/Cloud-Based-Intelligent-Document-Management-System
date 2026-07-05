@@ -19,7 +19,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # ...your other apps (e.g. "users", "documents")
+    "users",
+    "documents",
+    "ai_engine",
+    "audit",
 ]
 
 # Set ONCE. Do not redefine this later in the file.
