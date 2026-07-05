@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<div class="card p-4"><h3>Delete Document</h3><p>Are you sure you want to delete <strong>{{ doc.title }}</strong>?</p><form method="post">{% csrf_token %}<button class="btn btn-danger">Yes, delete</button><a class="btn btn-secondary" href="/documents/">Cancel</a></form></div>{% endblock %}

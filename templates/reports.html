@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<div class="card p-4"><h3>Document Category Report</h3><table class="table"><tr><th>Category</th><th>Document Count</th></tr>{% for item in data %}<tr><td>{{ item.category }}</td><td>{{ item.count }}</td></tr>{% endfor %}</table></div>{% endblock %}

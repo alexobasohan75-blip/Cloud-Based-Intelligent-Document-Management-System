@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% load mongo_extras %}{% block content %}<div class="card p-4"><h3>Audit Logs</h3><table class="table"><tr><th>Action</th><th>User ID</th><th>Document ID</th><th>Time</th></tr>{% for l in logs %}<tr><td>{{ l.action }}</td><td>{{ l.user_id }}</td><td>{{ l.document_id }}</td><td>{{ l.timestamp|dt }}</td></tr>{% endfor %}</table></div>{% endblock %}

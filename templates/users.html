@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% load mongo_extras %}{% block content %}<div class="card p-4"><h3>Users</h3><table class="table"><tr><th>Name</th><th>Email</th><th>Role</th><th>Date</th></tr>{% for u in users %}<tr><td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.created_at|dt }}</td></tr>{% endfor %}</table></div>{% endblock %}
