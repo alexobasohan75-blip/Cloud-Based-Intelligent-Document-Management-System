@@ -1,11 +1,10 @@
 Django==6.0.6
 django_mongodb_backend==6.0.3
-fitz==0.0.1.dev2
+PyMuPDF==1.24.5
 joblib==1.4.2
 pymongo==4.7.3
 python-dotenv==1.2.2
-python_docx==1.1.2
-scikit_learn==1.9.0
-sentence_transformers==3.0.1
+python-docx==1.1.2
+scikit-learn==1.9.0
 gunicorn==22.0.0
 whitenoise==6.7.0
