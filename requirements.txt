@@ -7,3 +7,5 @@ python-dotenv==1.2.2
 python_docx==1.1.2
 scikit_learn==1.9.0
 sentence_transformers==3.0.1
+gunicorn==22.0.0
+whitenoise==6.7.0
