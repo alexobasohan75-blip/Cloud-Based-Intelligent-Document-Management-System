@@ -1,6 +1,5 @@
 # Installation Guide
-1. Create MongoDB Atlas free cluster and copy connection string.{dbName: asabiaolawumi _db_user PW: DuxbVXDSOFhZqpsI}
-{asabiaolawumi@gmail.com PW: Asabia@8591#}
+1. Create MongoDB Atlas free cluster and copy connection string.
 2. Upload project to PythonAnywhere.
 3. Open Bash console:
    ```bash
