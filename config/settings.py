@@ -5,8 +5,11 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable is required")
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 if RENDER_EXTERNAL_HOSTNAME:
@@ -85,16 +88,26 @@ TIME_ZONE = 'Africa/Lagos'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+
+# Local development uses the project's media directory.
+# Render production uses the mounted persistent disk.
+if RENDER_EXTERNAL_HOSTNAME:
+    MEDIA_ROOT = Path("/var/data/media")
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
 
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024
