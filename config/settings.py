@@ -5,6 +5,12 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not SECRET_KEY:
@@ -16,12 +22,16 @@ if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
-    "config.apps.MongoAdminConfig",        # instead of "django.contrib.admin"
-    "config.apps.MongoAuthConfig",         # instead of "django.contrib.auth"
-    "config.apps.MongoContentTypesConfig", # instead of "django.contrib.contenttypes"
+     "config.apps.MongoAdminConfig",
+    "config.apps.MongoAuthConfig",
+    "config.apps.MongoContentTypesConfig",
     "django.contrib.sessions",
     "django.contrib.messages",
+
+    "cloudinary_storage",   # add this
     "django.contrib.staticfiles",
+    "cloudinary",           # add this
+
     "users",
     "documents",
     "ai_engine",
@@ -92,11 +102,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
