@@ -1,1 +1,149 @@
-{% extends 'base.html' %}{% load mongo_extras %}{% block content %}<div class="d-flex justify-content-between mb-3"><h2>Documents</h2><a href="/upload/" class="btn btn-primary">Upload</a></div><div class="card p-4"><form class="mb-3"><select name="category" class="form-select" onchange="this.form.submit()"><option value="">All categories</option>{% for c in categories %}<option {% if selected == c.category_name %}selected{% endif %}>{{ c.category_name }}</option>{% endfor %}</select></form><table class="table"><tr><th>Title</th><th>Category</th><th>Uploader</th><th>Date</th><th></th></tr>{% for doc in documents %}<tr><td>{{ doc.title }}</td><td>{{ doc.category }}</td><td>{{ doc.uploaded_by_name }}</td><td>{{ doc.upload_date|dt }}</td><td><a href="/document/{{ doc|mongo_id }}/" class="btn btn-sm btn-outline-primary">View</a></td></tr>{% empty %}<tr><td colspan="5">No document found.</td></tr>{% endfor %}</table></div>{% endblock %}
+{% extends "base.html" %}
+{% load mongo_extras %}
+
+{% block title %}
+    Documents | Intelligent DMS
+{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <span class="page-label">Library</span>
+        <h1 class="page-title">Documents</h1>
+        <p class="page-description">
+            Browse and manage uploaded documents.
+        </p>
+    </div>
+
+    <a href="{% url 'upload_document' %}" class="btn btn-primary action-button">
+        <i class="bi bi-cloud-arrow-up me-2"></i>
+        Upload document
+    </a>
+</section>
+
+<div class="content-card">
+    <div class="content-card-header">
+        <div>
+            <h2 class="section-title">Document library</h2>
+            <p class="section-description">
+                Filter documents by category.
+            </p>
+        </div>
+
+        <form method="get" class="category-filter">
+            <label for="category" class="visually-hidden">
+                Filter by category
+            </label>
+
+            <select
+                id="category"
+                name="category"
+                class="form-select"
+                onchange="this.form.submit()"
+            >
+                <option value="">All categories</option>
+
+                {% for category in categories %}
+                    <option
+                        value="{{ category.category_name }}"
+                        {% if selected == category.category_name %}selected{% endif %}
+                    >
+                        {{ category.category_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table document-table align-middle">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Category</th>
+                    <th>Uploader</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for doc in documents %}
+                    <tr>
+                        <td>
+                            <div class="document-info">
+                                <div class="document-icon">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+
+                                <div>
+                                    <p class="document-title">{{ doc.title }}</p>
+                                    <span class="document-subtitle">
+                                        {{ doc.file_type|upper }} document
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-soft">
+                                {{ doc.category }}
+                            </span>
+                        </td>
+
+                        <td>{{ doc.uploaded_by_name|default:"Unknown" }}</td>
+
+                        <td>
+                            <span class="date-text">
+                                {{ doc.upload_date|dt }}
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+                            <a
+                                href="{% url 'document_detail' doc|mongo_id %}"
+                                class="btn btn-sm btn-view"
+                            >
+                                View
+                            </a>
+
+                            {% if request.session.role == "admin" %}
+                                <a
+                                    href="{% url 'delete_document' doc|mongo_id %}"
+                                    class="btn btn-sm btn-outline-danger ms-1"
+                                    aria-label="Delete {{ doc.title }}"
+                                >
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-folder2-open"></i>
+                                </div>
+
+                                <h3>No documents found</h3>
+
+                                <p>
+                                    Upload a document or choose another category.
+                                </p>
+
+                                <a
+                                    href="{% url 'upload_document' %}"
+                                    class="btn btn-primary"
+                                >
+                                    Upload document
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

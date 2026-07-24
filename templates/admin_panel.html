@@ -1,1 +1,129 @@
-{% extends 'base.html' %}{% block content %}<h2>Admin Panel</h2><div class="row g-3 mb-4"><div class="col"><a class="btn btn-outline-primary w-100" href="/admin-panel/users/">Manage Users</a></div><div class="col"><a class="btn btn-outline-primary w-100" href="/admin-panel/categories/">Categories</a></div><div class="col"><a class="btn btn-outline-primary w-100" href="/admin-panel/logs/">Audit Logs</a></div></div><div class="card p-4"><h4>Recent Documents</h4><table class="table"><tr><th>Title</th><th>Category</th><th>Uploader</th></tr>{% for d in documents %}<tr><td>{{ d.title }}</td><td>{{ d.category }}</td><td>{{ d.uploaded_by_name }}</td></tr>{% endfor %}</table></div>{% endblock %}
+{% extends "base.html" %}
+{% load mongo_extras %}
+
+{% block title %}
+    Admin Panel | Intelligent DMS
+{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <span class="page-label">Administration</span>
+        <h1 class="page-title">Admin Panel</h1>
+        <p class="page-description">
+            Manage users, document categories and system activity.
+        </p>
+    </div>
+</section>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <a href="{% url 'manage_users' %}" class="admin-action-card">
+            <span class="admin-action-icon">
+                <i class="bi bi-people"></i>
+            </span>
+
+            <span>
+                <strong>Manage Users</strong>
+                <small>Review accounts and roles</small>
+            </span>
+
+            <i class="bi bi-arrow-right ms-auto"></i>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{% url 'manage_categories' %}" class="admin-action-card">
+            <span class="admin-action-icon">
+                <i class="bi bi-tags"></i>
+            </span>
+
+            <span>
+                <strong>Categories</strong>
+                <small>Organise document categories</small>
+            </span>
+
+            <i class="bi bi-arrow-right ms-auto"></i>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{% url 'audit_logs' %}" class="admin-action-card">
+            <span class="admin-action-icon">
+                <i class="bi bi-clock-history"></i>
+            </span>
+
+            <span>
+                <strong>Audit Logs</strong>
+                <small>Review system activity</small>
+            </span>
+
+            <i class="bi bi-arrow-right ms-auto"></i>
+        </a>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="content-card-header">
+        <div>
+            <span class="section-label">Activity</span>
+            <h2 class="section-title">Recent Documents</h2>
+        </div>
+
+        <a href="{% url 'document_list' %}" class="btn btn-outline-primary">
+            View all
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table document-table align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Uploader</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for doc in documents %}
+                    <tr>
+                        <td>{{ doc.title }}</td>
+
+                        <td>
+                            <span class="badge badge-soft">
+                                {{ doc.category }}
+                            </span>
+                        </td>
+
+                        <td>{{ doc.uploaded_by_name|default:"Unknown" }}</td>
+
+                        <td class="text-end">
+                            <a
+                                href="{% url 'document_detail' doc|mongo_id %}"
+                                class="btn btn-sm btn-view"
+                            >
+                                View
+                            </a>
+
+                            <a
+                                href="{% url 'delete_document' doc|mongo_id %}"
+                                class="btn btn-sm btn-outline-danger ms-1"
+                            >
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-secondary">
+                            No documents are available.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,1 +1,104 @@
-{% extends 'base.html' %}{% load mongo_extras %}{% block content %}<div class="card p-4"><h3>{{ doc.title }}</h3><p><span class="badge badge-soft">{{ doc.category }}</span> <span class="text-muted">{{ doc.file_type }} • {{ doc.upload_date|dt }}</span></p><a class="btn btn-primary mb-3" href="{{ doc.file_url }}" target="_blank">Preview / Download</a><a class="btn btn-outline-danger mb-3" href="/document/{{ doc|mongo_id }}/delete/">Delete</a><h5>Extracted Text Preview</h5><div class="preview-box">{{ doc.extracted_text|truncatechars:7000 }}</div></div>{% endblock %}
+{% extends "base.html" %}
+{% load mongo_extras %}
+
+{% block title %}
+    {{ doc.title }} | Intelligent DMS
+{% endblock %}
+
+{% block content %}
+<div class="content-card">
+    <div class="document-detail-header">
+        <div class="document-detail-title">
+            <div class="document-large-icon">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+
+            <div>
+                <span class="page-label">
+                    Document details
+                </span>
+
+                <h1 class="section-title">
+                    {{ doc.title }}
+                </h1>
+
+                <div class="document-meta">
+                    <span class="badge badge-soft">
+                        {{ doc.category }}
+                    </span>
+
+                    <span>
+                        {{ doc.file_type|upper }}
+                    </span>
+
+                    <span>
+                        <i class="bi bi-calendar3 me-1"></i>
+                        {{ doc.upload_date|dt }}
+                    </span>
+
+                    <span>
+                        <i class="bi bi-person me-1"></i>
+                        {{ doc.uploaded_by_name|default:"Unknown user" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="document-detail-actions">
+            {% if doc.file_url %}
+                <a
+                    class="btn btn-primary"
+                    href="{{ doc.file_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <i class="bi bi-eye me-2"></i>
+                    Preview
+                </a>
+            {% endif %}
+
+            <a
+                class="btn btn-outline-primary"
+                href="{% url 'download_document' doc|mongo_id %}"
+            >
+                <i class="bi bi-download me-2"></i>
+                Download
+            </a>
+
+            <a
+                class="btn btn-outline-danger"
+                href="{% url 'delete_document' doc|mongo_id %}"
+            >
+                <i class="bi bi-trash3 me-2"></i>
+                Delete
+            </a>
+        </div>
+    </div>
+
+    <div class="document-preview-section">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="section-title">
+                Extracted text
+            </h2>
+
+            <span class="small text-secondary">
+                Text preview
+            </span>
+        </div>
+
+        {% if doc.extracted_text %}
+            <div class="preview-box">
+                {{ doc.extracted_text|truncatechars:7000 }}
+            </div>
+        {% else %}
+            <div class="empty-text-preview">
+                <i class="bi bi-file-text"></i>
+
+                <p class="mb-0">
+                    No extracted text is available for this document.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

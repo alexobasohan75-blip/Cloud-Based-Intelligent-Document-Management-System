@@ -1,1 +1,188 @@
-{% extends 'base.html' %}{% load mongo_extras %}{% block content %}<h2>Dashboard</h2><div class="row g-3 mb-4"><div class="col-md-4"><div class="card p-3"><small>Total Documents</small><h3>{{ total_documents }}</h3></div></div><div class="col-md-4"><div class="card p-3"><small>Total Users</small><h3>{{ total_users }}</h3></div></div><div class="col-md-4"><div class="card p-3"><small>Categories</small><h3>{{ total_categories }}</h3></div></div></div><div class="card p-4"><h4>Recent Documents</h4><table class="table"><tr><th>Title</th><th>Category</th><th>Type</th><th>Date</th><th></th></tr>{% for doc in documents %}<tr><td>{{ doc.title }}</td><td><span class="badge badge-soft">{{ doc.category }}</span></td><td>{{ doc.file_type }}</td><td>{{ doc.upload_date|dt }}</td><td><a class="btn btn-sm btn-outline-primary" href="/document/{{ doc|mongo_id }}/">View</a></td></tr>{% empty %}<tr><td colspan="5">No uploads yet.</td></tr>{% endfor %}</table></div>{% endblock %}
+{% extends 'base.html' %}
+{% load mongo_extras %}
+
+{% block title %}
+    Dashboard | Intelligent DMS
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-header">
+    <div>
+        <span class="page-label">Overview</span>
+
+        <h1 class="page-title">
+            Welcome back, {{ request.session.name }}
+        </h1>
+
+        <p class="page-description">
+            Manage, organise and access your documents from one place.
+        </p>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="/search/" class="btn btn-light action-button">
+            <i class="bi bi-search me-2"></i>
+            Search
+        </a>
+
+        <a href="/upload/" class="btn btn-primary action-button">
+            <i class="bi bi-cloud-arrow-up me-2"></i>
+            Upload document
+        </a>
+    </div>
+</section>
+
+<section class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-4">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-primary">
+                <i class="bi bi-files"></i>
+            </div>
+
+            <div>
+                <p class="stat-label">Total Documents</p>
+                <h2 class="stat-value">{{ total_documents }}</h2>
+                <span class="stat-caption">
+                    Documents stored
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-success">
+                <i class="bi bi-people"></i>
+            </div>
+
+            <div>
+                <p class="stat-label">Total Users</p>
+                <h2 class="stat-value">{{ total_users }}</h2>
+                <span class="stat-caption">
+                    Registered users
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-warning">
+                <i class="bi bi-tags"></i>
+            </div>
+
+            <div>
+                <p class="stat-label">Categories</p>
+                <h2 class="stat-value">{{ total_categories }}</h2>
+                <span class="stat-caption">
+                    Document categories
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content-card">
+    <div class="content-card-header">
+        <div>
+            <span class="section-label">Documents</span>
+            <h2 class="section-title">Recent Documents</h2>
+            <p class="section-description">
+                Your most recently uploaded files.
+            </p>
+        </div>
+
+        <a href="/documents/" class="btn btn-outline-primary">
+            View all
+            <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table document-table align-middle">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Uploaded</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for doc in documents %}
+                    <tr>
+                        <td>
+                            <div class="document-info">
+                                <div class="document-icon">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+
+                                <div>
+                                    <p class="document-title">
+                                        {{ doc.title }}
+                                    </p>
+
+                                    <span class="document-subtitle">
+                                        Document file
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-soft">
+                                {{ doc.category }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="file-type">
+                                {{ doc.file_type|upper }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="date-text">
+                                {{ doc.upload_date|dt }}
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+                            <a
+                                class="btn btn-sm btn-view"
+                                href="/document/{{ doc|mongo_id }}/"
+                            >
+                                View
+                                <i class="bi bi-arrow-up-right ms-1"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-folder2-open"></i>
+                                </div>
+
+                                <h3>No documents yet</h3>
+
+                                <p>
+                                    Upload your first document to see it here.
+                                </p>
+
+                                <a href="/upload/" class="btn btn-primary">
+                                    <i class="bi bi-cloud-arrow-up me-2"></i>
+                                    Upload document
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
